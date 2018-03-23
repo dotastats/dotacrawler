@@ -2,8 +2,10 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"time"
 	"utilities/uerror"
 )
 
@@ -16,8 +18,11 @@ type UrlUploadImage struct {
 	Url string `json:"url"`
 }
 
-func (r httpReq) CrawlByURL(method, url string) (body io.Reader, status int, err error) {
-	client := http.Client{}
+func (r httpReq) CrawlByURL(method, url string) (body io.ReadCloser, status int, err error) {
+	fmt.Println(url)
+	client := http.Client{
+		Timeout: time.Second * 10,
+	}
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
@@ -31,7 +36,6 @@ func (r httpReq) CrawlByURL(method, url string) (body io.Reader, status int, err
 		err = uerror.StackTrace(err)
 		return
 	}
-	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		status = resp.StatusCode
 		err = uerror.StackTrace(errors.New("Status crawl fail " + resp.Status))

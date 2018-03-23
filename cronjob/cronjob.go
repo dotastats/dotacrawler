@@ -46,7 +46,7 @@ func Run() {
 	if cron == nil {
 		panic(errors.New("Init cronjob"))
 	}
-	cron.Wg.Add(1)
+	cron.Wg.Add(3)
 	go func() {
 		for {
 			if cron.Error != nil {
@@ -58,22 +58,70 @@ func Run() {
 			}
 			select {
 			case <-cron.TickerCrawl.C:
-				if time.Now().Hour() >= 22 || time.Now().Hour() <= 7 {
-					continue
-				}
-				fmt.Println("Crawl")
-				cron.crawlVpGame()
+				fmt.Println("Crawl live game")
+				cron.crawlLiveVpGame()
 			}
 		}
 	}()
 
+	go func() {
+		for {
+			if cron.Error != nil {
+				ulog.Logger().LogError("Can't crawl data", ulog.Fields{
+					"ERROR": cron.Error,
+				})
+				cron.Wg.Done()
+				return
+			}
+			select {
+			case <-cron.TickerCrawl.C:
+				fmt.Println("Crawl open game")
+				cron.crawlOpenVpGame()
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			if cron.Error != nil {
+				ulog.Logger().LogError("Can't crawl data", ulog.Fields{
+					"ERROR": cron.Error,
+				})
+				cron.Wg.Done()
+				return
+			}
+			select {
+			case <-cron.TickerCrawl.C:
+				fmt.Println("Crawl close game")
+				cron.crawlCloseVpGame()
+			}
+		}
+	}()
 	cron.Wg.Wait()
 }
 
-func (r *cronJob) crawlVpGame() {
-	err := r.Entity.VpGame.CrawlMatches()
+func (r *cronJob) crawlLiveVpGame() {
+	err := r.Entity.VpGame.CrawlLiveMatches()
 	if err != nil {
-		ulog.Logger().LogError("Can't crawl data from vpgame", ulog.Fields{
+		ulog.Logger().LogError("Can't crawl live game from vpgame", ulog.Fields{
+			"ERROR": err,
+		})
+	}
+	time.Sleep(1 * time.Second)
+}
+func (r *cronJob) crawlOpenVpGame() {
+	err := r.Entity.VpGame.CrawlOpenMatches()
+	if err != nil {
+		ulog.Logger().LogError("Can't crawl open game from vpgame", ulog.Fields{
+			"ERROR": err,
+		})
+	}
+	time.Sleep(1 * time.Second)
+}
+func (r *cronJob) crawlCloseVpGame() {
+	err := r.Entity.VpGame.CrawlClosedMatches()
+	if err != nil {
+		ulog.Logger().LogError("Can't crawl close game from vpgame", ulog.Fields{
 			"ERROR": err,
 		})
 	}

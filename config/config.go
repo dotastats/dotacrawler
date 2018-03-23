@@ -32,8 +32,10 @@ type Log struct {
 }
 
 type VpGame struct {
-	UrlCrawlVpgame      string
-	IntervalSecondCrawl int
+	UrlCrawlMatchVpgame  string
+	UrlCrawlSeriesVpgame string
+	UrlCdnVpgame         string
+	IntervalSecondCrawl  int
 }
 
 func load() {
