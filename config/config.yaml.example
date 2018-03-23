@@ -1,0 +1,18 @@
+# see dotacrawler/config/config.yaml.example for more option
+#
+app:
+  host: 0.0.0.0
+  port: 5002
+  debug: true
+  whitelist:
+      - "http://localhost:5002"
+
+vpGame:
+  urlCrawlVpgame: https://vpgame.com
+  intervalSecondCrawl: 480 #second
+
+log:
+  prefix    : "dotacrawler"
+  dir       : /home/justin/workspace/src/dotacrawler/log
+  levelDebug: true
+

@@ -1,0 +1,10 @@
+config.yaml
+bin/
+*.un
+*.un~
+tags
+*.yaml
+*.yml
+!*.example
+log
+
