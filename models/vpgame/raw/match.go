@@ -118,8 +118,8 @@ func (match *VPGameMatch) ConvertFromBase(baseMatch models.VpMatch) models.VpMat
 		TeamAShort:     match.Team.Left.NameShort,
 		TeamBShort:     match.Team.Right.NameShort,
 	}
-
 }
+
 func (match *VPGameMatch) CreateBaseMatch(logoURL string) models.VpMatch {
 	bestOf := "BO1"
 	if match.Round != "" {

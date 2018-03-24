@@ -81,10 +81,6 @@ func (r vpGame) saveMatches(matches []models.VpMatch) (err error) {
 		matchIds[i] = match.MatchID
 	}
 
-	matchIdsExists, err := repo.VpMatch.GetIdsExistsIn(matchIds)
-	if err != nil {
-		return uerror.StackTrace(err)
-	}
 	for _, match := range matches {
 		err = repo.VpMatch.Upsert(&match)
 		if err != nil {
