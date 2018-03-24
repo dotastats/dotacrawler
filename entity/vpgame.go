@@ -5,7 +5,6 @@ import (
 	"dotacrawler/service"
 	"dotamaster/models"
 	"dotamaster/repo"
-	"dotamaster/utils"
 	"dotamaster/utils/uerror"
 	"dotamaster/utils/ulog"
 	"encoding/json"
@@ -87,10 +86,7 @@ func (r vpGame) saveMatches(matches []models.VpMatch) (err error) {
 		return uerror.StackTrace(err)
 	}
 	for _, match := range matches {
-		if utils.IsExistedInt(match.MatchID, matchIdsExists) {
-			continue
-		}
-		err = repo.VpMatch.Create(&match)
+		err = repo.VpMatch.Upsert(&match)
 		if err != nil {
 			err = uerror.StackTrace(err)
 			ulog.Logger().LogErrorObjectManual(err, "Can't create vpgame match", match)

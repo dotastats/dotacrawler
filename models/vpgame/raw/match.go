@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"utilities/ulog"
 )
 
 type VPGameMatch struct {
@@ -125,6 +126,11 @@ func (match *VPGameMatch) CreateBaseMatch(logoURL string) models.VpMatch {
 		bestOf = match.Round
 	}
 
+	seriesId, err := strconv.Atoi(match.SeriesID)
+	if err != nil {
+		ulog.Logger().LogErrorObjectManual(err, "Can't convert string to integer", seriesId)
+	}
+
 	return models.VpMatch{
 		TeamAID:        match.Team.Left.ID,
 		TeamBID:        match.Team.Right.ID,
@@ -136,7 +142,7 @@ func (match *VPGameMatch) CreateBaseMatch(logoURL string) models.VpMatch {
 		TournamentLogo: logoURL + match.Tournament.Logo,
 		LogoA:          logoURL + match.Team.Left.Logo,
 		LogoB:          logoURL + match.Team.Right.Logo,
-		SeriesID:       match.SeriesID,
+		SeriesID:       seriesId,
 	}
 
 }
